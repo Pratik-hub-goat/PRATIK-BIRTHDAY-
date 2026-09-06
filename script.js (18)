@@ -1,0 +1,1785 @@
+// ========================================
+// PRATIK ROY - 15TH BIRTHDAY
+// SCRIPT.JS - PART 1
+// ========================================
+
+
+// ========================================
+// MOBILE MENU
+// ========================================
+
+const menuButton = document.getElementById("menu-button");
+const mobileNav = document.getElementById("mobile-nav");
+
+if (menuButton && mobileNav) {
+
+    menuButton.addEventListener("click", () => {
+
+        mobileNav.classList.toggle("open");
+
+        const isOpen =
+            mobileNav.classList.contains("open");
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+        menuButton.textContent =
+            isOpen ? "✕" : "☰";
+    });
+
+
+    // Close mobile menu after clicking a link
+
+    const mobileLinks =
+        mobileNav.querySelectorAll("a");
+
+    mobileLinks.forEach((link) => {
+
+        link.addEventListener("click", () => {
+
+            mobileNav.classList.remove("open");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuButton.textContent = "☰";
+        });
+
+    });
+
+}
+
+
+// ========================================
+// COUNTDOWN
+// ========================================
+
+const countdownTarget =
+    new Date("2026-09-08T16:00:00+05:30").getTime();
+
+const daysElement =
+    document.getElementById("days");
+
+const hoursElement =
+    document.getElementById("hours");
+
+const minutesElement =
+    document.getElementById("minutes");
+
+const secondsElement =
+    document.getElementById("seconds");
+
+
+function updateCountdown() {
+
+    const now =
+        new Date().getTime();
+
+    const difference =
+        countdownTarget - now;
+
+
+    if (difference <= 0) {
+
+        if (daysElement) daysElement.textContent = "00";
+        if (hoursElement) hoursElement.textContent = "00";
+        if (minutesElement) minutesElement.textContent = "00";
+        if (secondsElement) secondsElement.textContent = "00";
+
+        return;
+    }
+
+
+    const days =
+        Math.floor(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+
+    const hours =
+        Math.floor(
+            (difference /
+                (1000 * 60 * 60)) % 24
+        );
+
+    const minutes =
+        Math.floor(
+            (difference /
+                (1000 * 60)) % 60
+        );
+
+    const seconds =
+        Math.floor(
+            (difference / 1000) % 60
+        );
+
+
+    if (daysElement) {
+        daysElement.textContent =
+            String(days).padStart(2, "0");
+    }
+
+    if (hoursElement) {
+        hoursElement.textContent =
+            String(hours).padStart(2, "0");
+    }
+
+    if (minutesElement) {
+        minutesElement.textContent =
+            String(minutes).padStart(2, "0");
+    }
+
+    if (secondsElement) {
+        secondsElement.textContent =
+            String(seconds).padStart(2, "0");
+    }
+}
+
+
+updateCountdown();
+
+setInterval(
+    updateCountdown,
+    1000
+);
+
+
+// ========================================
+// RSVP LIVE PREVIEW
+// ========================================
+
+const guestName =
+    document.getElementById("guest-name");
+
+const guestMessage =
+    document.getElementById("guest-message");
+
+const attendanceInputs =
+    document.querySelectorAll(
+        'input[name="attendance"]'
+    );
+
+
+const previewName =
+    document.getElementById("preview-name");
+
+const previewAttendance =
+    document.getElementById(
+        "preview-attendance"
+    );
+
+const previewMessage =
+    document.getElementById(
+        "preview-message"
+    );
+
+
+// ----------------------------------------
+// Name Preview
+// ----------------------------------------
+
+if (guestName && previewName) {
+
+    guestName.addEventListener(
+        "input",
+        () => {
+
+            const value =
+                guestName.value.trim();
+
+            previewName.textContent =
+                value || "Your Name";
+        }
+    );
+
+}
+
+
+// ----------------------------------------
+// Message Preview
+// ----------------------------------------
+
+if (guestMessage && previewMessage) {
+
+    guestMessage.addEventListener(
+        "input",
+        () => {
+
+            const value =
+                guestMessage.value.trim();
+
+            previewMessage.textContent =
+                value ||
+                "Your birthday message will appear here...";
+        }
+    );
+
+}
+
+
+// ----------------------------------------
+// Attendance Preview
+// ----------------------------------------
+
+if (previewAttendance) {
+
+    attendanceInputs.forEach(
+        (input) => {
+
+            input.addEventListener(
+                "change",
+                () => {
+
+                    const selected =
+                        document.querySelector(
+                            'input[name="attendance"]:checked'
+                        );
+
+
+                    if (!selected) {
+
+                        previewAttendance.textContent =
+                            "Haven't decided yet";
+
+                        return;
+                    }
+
+
+                    const attendanceText = {
+                        yes: "🎉 I'M COMING!",
+                        maybe: "💭 MAYBE I'LL COME!",
+                        no: "❤️ SORRY, CAN'T MAKE IT"
+                    };
+
+
+                    const key =
+    String(selected.value || "").toLowerCase();
+
+previewAttendance.textContent =
+    attendanceText[key] ||
+    selected.value;
+    
+                }
+            );
+
+        }
+    );
+
+}
+
+
+// ========================================
+// SCROLL REVEAL
+// ========================================
+
+const revealElements =
+    document.querySelectorAll(
+        ".section-heading, " +
+        ".invitation-card, " +
+        ".detail-card, " +
+        ".message-card, " +
+        ".friend-card, " +
+        ".rsvp-card, " +
+        ".preview-card, " +
+        ".birthday-wall-card, " +
+        ".final-cta-card"
+    );
+
+
+revealElements.forEach(
+    (element) => {
+
+        element.style.opacity = "0";
+
+        element.style.transform =
+            "translateY(25px)";
+
+        element.style.transition =
+            "opacity 0.7s ease, " +
+            "transform 0.7s ease";
+    }
+);
+
+
+const revealObserver =
+    new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach(
+                (entry) => {
+
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+
+                    entry.target.style.opacity =
+                        "1";
+
+                    entry.target.style.transform =
+                        "translateY(0)";
+
+
+                    revealObserver.unobserve(
+                        entry.target
+                    );
+                }
+            );
+
+        },
+        {
+            threshold: 0.12
+        }
+    );
+
+
+revealElements.forEach(
+    (element) => {
+
+        revealObserver.observe(element);
+    }
+);
+
+/* ========================================
+   FIREBASE + FIRESTORE
+   RSVP SYSTEM - PART 2
+======================================== */
+
+import {
+    auth,
+    db
+} from "./firebase.js";
+
+import {
+    signInAnonymously,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+    doc,
+    setDoc,
+    getDoc,
+    deleteDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+
+/* ========================================
+   VARIABLES
+======================================== */
+
+const rsvpForm =
+    document.getElementById("rsvp-form");
+
+const rsvpSubmitButton =
+    document.getElementById(
+        "rsvp-submit-button"
+    );
+
+const rsvpStatus =
+    document.getElementById(
+        "rsvp-status"
+    );
+
+
+let currentUser = null;
+let latestBirthdayCards = [];
+let birthdayWallStarted = false;
+
+
+/* ========================================
+   STATUS HELPER
+======================================== */
+
+function showRsvpStatus(
+    message,
+    type = "normal"
+) {
+
+    if (!rsvpStatus) {
+        return;
+    }
+
+    rsvpStatus.textContent = message;
+
+    if (type === "error") {
+
+        rsvpStatus.style.color =
+            "#ff9fb5";
+
+    } else if (type === "success") {
+
+        rsvpStatus.style.color =
+            "#e8c58b";
+
+    } else {
+
+        rsvpStatus.style.color =
+            "var(--pink)";
+    }
+}
+
+
+/* ========================================
+   ANONYMOUS LOGIN
+======================================== */
+
+async function startAnonymousAuth() {
+
+    try {
+
+        await signInAnonymously(auth);
+
+    } catch (error) {
+
+        console.error(
+            "Anonymous authentication failed:",
+            error
+        );
+
+        showRsvpStatus(
+            "Unable to connect right now. Please try again.",
+            "error"
+        );
+    }
+}
+
+onAuthStateChanged(
+    auth,
+    (user) => {
+
+        currentUser = user;
+
+        if (user) {
+
+            console.log(
+                "Guest authentication ready."
+            );
+
+            // Re-render cards now that we know
+            // which card belongs to this guest.
+            displayBirthdayCards(
+                latestBirthdayCards
+            );
+
+            // Start the wall only once,
+            // after authentication is ready.
+            if (!birthdayWallStarted) {
+
+                birthdayWallStarted = true;
+
+                startBirthdayWall();
+            }
+
+        } else {
+
+            currentUser = null;
+        }
+    }
+);
+
+startAnonymousAuth();
+
+
+/* ========================================
+   SAVE RSVP
+======================================== */
+
+/* ========================================
+   RSVP CREATE / EDIT SUBMISSION
+   PART 5
+======================================== */
+
+if (rsvpForm) {
+
+    rsvpForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            /* --------------------------------
+               CHECK AUTH
+            -------------------------------- */
+
+            if (!currentUser) {
+
+                showRsvpStatus(
+                    "Connecting... please try again in a moment.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /* --------------------------------
+               GET FORM VALUES
+            -------------------------------- */
+
+            const name =
+                guestName
+                    ? guestName.value.trim()
+                    : "";
+
+            const message =
+                guestMessage
+                    ? guestMessage.value.trim()
+                    : "";
+
+            const selectedAttendance =
+                document.querySelector(
+                    'input[name="attendance"]:checked'
+                );
+
+            const attendance =
+                selectedAttendance
+                    ? selectedAttendance.value
+                    : "";
+
+
+            /* --------------------------------
+               VALIDATION
+            -------------------------------- */
+
+            if (!name) {
+
+                showRsvpStatus(
+                    "Please enter your name.",
+                    "error"
+                );
+
+                guestName?.focus();
+
+                return;
+            }
+
+
+            if (name.length < 2) {
+
+                showRsvpStatus(
+                    "Please enter a valid name.",
+                    "error"
+                );
+
+                guestName?.focus();
+
+                return;
+            }
+
+
+            if (!attendance) {
+
+                showRsvpStatus(
+                    "Please choose your attendance.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (!message) {
+
+                showRsvpStatus(
+                    "Write a little birthday message first! ❤️",
+                    "error"
+                );
+
+                guestMessage?.focus();
+
+                return;
+            }
+
+
+            if (name.length > 60) {
+
+                showRsvpStatus(
+                    "Name is too long.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (message.length > 300) {
+
+                showRsvpStatus(
+                    "Message is too long. Keep it under 300 characters.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /* --------------------------------
+               CHECK EDIT MODE
+            -------------------------------- */
+
+            const isEditing =
+                rsvpForm.dataset.editing === "true";
+
+            const editingCardId =
+                rsvpForm.dataset.cardId || null;
+
+
+            /* --------------------------------
+               DISABLE BUTTON
+            -------------------------------- */
+
+            if (rsvpSubmitButton) {
+
+                rsvpSubmitButton.disabled = true;
+
+                rsvpSubmitButton.textContent =
+                    isEditing
+                        ? "Saving..."
+                        : "Adding...";
+            }
+
+
+            showRsvpStatus(
+                isEditing
+                    ? "Saving your changes..."
+                    : "Adding your birthday card..."
+            );
+
+
+            try {
+
+                /*
+                 * The card document ID is always
+                 * the anonymous user's UID.
+                 */
+
+                const cardId =
+                    currentUser.uid;
+
+
+                const cardRef =
+                    doc(
+                        db,
+                        "birthdayCards",
+                        cardId
+                    );
+
+
+                /* =================================
+                   EDIT EXISTING CARD
+                ================================= */
+
+                if (isEditing) {
+
+                    /*
+                     * Extra safety:
+                     * the card being edited must belong
+                     * to the currently authenticated user.
+                     */
+
+                    if (
+                        editingCardId &&
+                        editingCardId !== currentUser.uid
+                    ) {
+
+                        throw new Error(
+                            "You can only edit your own card."
+                        );
+                    }
+
+
+                    const existingCard =
+                        await getDoc(cardRef);
+
+
+                    if (!existingCard.exists()) {
+
+                        showRsvpStatus(
+                            "Your card could not be found. Please create a new one.",
+                            "error"
+                        );
+
+                        resetRsvpForm();
+
+                        return;
+                    }
+
+
+                    const existingData =
+                        existingCard.data();
+
+
+                    if (
+                        existingData.ownerId !==
+                        currentUser.uid
+                    ) {
+
+                        throw new Error(
+                            "You can only edit your own card."
+                        );
+                    }
+
+
+                    await setDoc(
+                        cardRef,
+                        {
+                            name: name,
+
+                            attendance:
+                                attendance,
+
+                            message:
+                                message,
+
+                            ownerId:
+                                currentUser.uid,
+
+                            updatedAt:
+                                serverTimestamp()
+                        },
+                        {
+                            merge: true
+                        }
+                    );
+
+
+                    showRsvpStatus(
+                        "✅ Your birthday card has been updated!",
+                        "success"
+                    );
+
+
+                    resetRsvpForm();
+
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "birthdayCardUpdated"
+                        )
+                    );
+
+
+                    return;
+                }
+
+
+                /* =================================
+                   CREATE NEW CARD
+                ================================= */
+
+                const existingCard =
+                    await getDoc(cardRef);
+
+
+                if (existingCard.exists()) {
+
+                    showRsvpStatus(
+                        "You already have a birthday card. Use the Edit button on your card to change it.",
+                        "error"
+                    );
+
+                    if (rsvpSubmitButton) {
+
+                        rsvpSubmitButton.disabled =
+                            false;
+
+                        rsvpSubmitButton.textContent =
+                            "💌 Leave My Birthday Card";
+                    }
+
+                    return;
+                }
+
+
+                await setDoc(
+                    cardRef,
+                    {
+                        name: name,
+
+                        attendance:
+                            attendance,
+
+                        message:
+                            message,
+
+                        ownerId:
+                            currentUser.uid,
+
+                        createdAt:
+                            serverTimestamp()
+                    }
+                );
+
+
+                showRsvpStatus(
+                    "🎉 Your birthday card has been added! Thank you! ❤️",
+                    "success"
+                );
+
+
+                resetRsvpForm();
+
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "birthdayCardAdded"
+                    )
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "RSVP save error:",
+                    error
+                );
+
+
+                showRsvpStatus(
+                    error.message ||
+                    "Something went wrong while saving your card.",
+                    "error"
+                );
+
+
+                if (rsvpSubmitButton) {
+
+                    rsvpSubmitButton.disabled =
+                        false;
+
+                    rsvpSubmitButton.textContent =
+                        isEditing
+                            ? "💾 Save Changes"
+                            : "💌 Leave My Birthday Card";
+                }
+            }
+
+        }
+    );
+
+}
+
+/* ========================================
+   BIRTHDAY WALL
+   FIRESTORE REAL-TIME CARDS - PART 3
+======================================== */
+
+import {
+    collection,
+    onSnapshot,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+const birthdayWallGrid =
+    document.getElementById(
+        "birthday-wall-grid"
+    );
+
+
+/* ========================================
+   ATTENDANCE LABEL
+======================================== */
+function getAttendanceLabel(attendance) {
+
+    const labels = {
+        yes: "🎉 I'M COMING",
+        maybe: "💭 MAYBE",
+        no: "❤️ CAN'T MAKE IT"
+    };
+
+    const key =
+        String(attendance || "").toLowerCase();
+
+    return (
+        labels[key] ||
+        "💌 BIRTHDAY CARD"
+    );
+}
+
+/* ========================================
+   ESCAPE HTML
+   Keeps guest messages as text
+======================================== */
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value ?? "";
+
+    return div.innerHTML;
+}
+
+
+/* ========================================
+   FORMAT DATE
+======================================== */
+
+function formatCardDate(timestamp) {
+
+    if (!timestamp) {
+        return "Just now";
+    }
+
+
+    try {
+
+        const date =
+            timestamp.toDate();
+
+
+        return date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+    } catch {
+
+        return "Recently";
+    }
+}
+
+
+/* ========================================
+   CREATE CARD HTML
+======================================== */
+
+function createBirthdayCard(
+    card
+) {
+
+    const cardElement =
+        document.createElement("article");
+
+
+    cardElement.className =
+        "birthday-wall-card";
+
+
+    const isOwner =
+        currentUser &&
+        card.ownerId === currentUser.uid;
+
+
+    cardElement.innerHTML = `
+        <div class="wall-card-top">
+
+            <span class="wall-card-rose">
+                🌹
+            </span>
+
+            <span class="wall-card-status">
+                ${escapeHtml(
+                    getAttendanceLabel(
+                        card.attendance
+                    )
+                )}
+            </span>
+
+        </div>
+
+
+        <h3>
+            ${escapeHtml(card.name)}
+        </h3>
+
+
+        <p>
+            ${escapeHtml(card.message)}
+        </p>
+
+
+        <div class="wall-card-date">
+            Added ${escapeHtml(
+                formatCardDate(
+                    card.createdAt
+                )
+            )}
+        </div>
+
+
+        ${
+            isOwner
+                ? `
+                    <div class="wall-card-actions">
+
+                        <button
+                            type="button"
+                            class="wall-action edit-card-button"
+                        >
+                            ✏️ Edit
+                        </button>
+
+                        <button
+                            type="button"
+                            class="wall-action delete-card-button"
+                        >
+                            🗑️ Delete
+                        </button>
+
+                    </div>
+                  `
+                : ""
+        }
+    `;
+
+
+    /* ====================================
+       EDIT BUTTON
+    ==================================== */
+
+    const editButton =
+        cardElement.querySelector(
+            ".edit-card-button"
+        );
+
+
+    if (editButton) {
+
+        editButton.addEventListener(
+            "click",
+            () => {
+
+                loadCardIntoForm(card);
+
+            }
+        );
+    }
+
+
+    /* ====================================
+       DELETE BUTTON
+    ==================================== */
+
+    const deleteButton =
+        cardElement.querySelector(
+            ".delete-card-button"
+        );
+
+
+    if (deleteButton) {
+
+        deleteButton.addEventListener(
+            "click",
+            () => {
+
+                deleteBirthdayCard(
+                    card.id
+                );
+
+            }
+        );
+    }
+
+
+    return cardElement;
+}
+
+
+/* ========================================
+   DISPLAY WALL
+======================================== */
+
+function displayBirthdayCards(
+    cards
+) {
+        latestBirthdayCards = cards;
+
+    if (!birthdayWallGrid) {
+        return;
+    }
+
+
+    birthdayWallGrid.innerHTML = "";
+
+
+    if (cards.length === 0) {
+
+        birthdayWallGrid.innerHTML = `
+            <div class="wall-empty">
+
+                <div class="wall-empty-icon">
+                    🌹
+                </div>
+
+                <p>
+                    No birthday cards yet.<br>
+                    Be the first friend to leave one!
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    cards.forEach(
+        (card) => {
+
+            const element =
+                createBirthdayCard(card);
+
+            birthdayWallGrid.appendChild(
+                element
+            );
+        }
+    );
+}
+
+
+/* ========================================
+   FIRESTORE REAL-TIME LISTENER
+======================================== */
+
+function startBirthdayWall() {
+
+    if (!birthdayWallGrid) {
+        return;
+    }
+
+
+    try {
+
+        const cardsCollection =
+            collection(
+                db,
+                "birthdayCards"
+            );
+
+
+        const cardsQuery =
+            query(
+                cardsCollection,
+                orderBy(
+                    "createdAt",
+                    "desc"
+                )
+            );
+
+
+        onSnapshot(
+            cardsQuery,
+
+            (snapshot) => {
+
+                const cards =
+                    snapshot.docs.map(
+                        (documentSnapshot) => {
+
+                            return {
+                                id:
+                                    documentSnapshot.id,
+
+                                ...documentSnapshot.data()
+                            };
+                        }
+                    );
+
+
+                displayBirthdayCards(
+                    cards
+                );
+            },
+
+
+            (error) => {
+
+                console.error(
+                    "Birthday wall error:",
+                    error
+                );
+
+
+                birthdayWallGrid.innerHTML = `
+                    <div class="wall-empty">
+
+                        <div class="wall-empty-icon">
+                            🌹
+                        </div>
+
+                        <p>
+                            Birthday cards will appear here
+                            once the guest book is connected.
+                        </p>
+
+                    </div>
+                `;
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Could not start birthday wall:",
+            error
+        );
+    }
+}
+
+
+
+/* ========================================
+   EDIT + DELETE BIRTHDAY CARD
+   PART 4
+======================================== */
+
+
+/* ========================================
+   LOAD OWNER CARD INTO RSVP FORM
+======================================== */
+
+function loadCardIntoForm(card) {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    /* ----------------------------------------
+       Safety check:
+       Only the card owner can edit it.
+    ---------------------------------------- */
+
+    if (card.ownerId !== currentUser.uid) {
+
+        showRsvpStatus(
+            "You can only edit your own card.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* ----------------------------------------
+       Fill name
+    ---------------------------------------- */
+
+    if (guestName) {
+
+        guestName.value =
+            card.name || "";
+
+    }
+
+
+    /* ----------------------------------------
+       Fill message
+    ---------------------------------------- */
+
+    if (guestMessage) {
+
+        guestMessage.value =
+            card.message || "";
+
+    }
+
+
+    /* ----------------------------------------
+       Select attendance
+    ---------------------------------------- */
+
+    attendanceInputs.forEach(
+        (input) => {
+
+            input.checked =
+                input.value === card.attendance;
+
+        }
+    );
+
+
+    /* ----------------------------------------
+       Update live preview
+    ---------------------------------------- */
+
+    if (previewName) {
+
+        previewName.textContent =
+            card.name || "Your Name";
+
+    }
+
+
+    if (previewMessage) {
+
+        previewMessage.textContent =
+            card.message ||
+            "Your birthday message will appear here...";
+
+    }
+
+
+    if (previewAttendance) {
+
+        previewAttendance.textContent =
+            getAttendanceLabel(
+                card.attendance
+            );
+
+    }
+
+
+    /* ----------------------------------------
+       Mark form as editing
+    ---------------------------------------- */
+
+    rsvpForm.dataset.editing =
+        "true";
+
+    rsvpForm.dataset.cardId =
+        card.id;
+
+
+    /* ----------------------------------------
+       Change button text
+    ---------------------------------------- */
+
+    if (rsvpSubmitButton) {
+
+        rsvpSubmitButton.textContent =
+            "💾 Save Changes";
+
+        rsvpSubmitButton.disabled =
+            false;
+    }
+
+
+    showRsvpStatus(
+        "You're editing your birthday card. Make your changes and save them.",
+        "normal"
+    );
+
+
+    /* ----------------------------------------
+       Scroll to RSVP form
+    ---------------------------------------- */
+
+    const rsvpSection =
+        document.getElementById(
+            "rsvp"
+        );
+
+
+    if (rsvpSection) {
+
+        rsvpSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+}
+
+
+/* ========================================
+   DELETE BIRTHDAY CARD
+======================================== */
+
+async function deleteBirthdayCard(
+    cardId
+) {
+
+    if (!currentUser) {
+
+        showRsvpStatus(
+            "Please wait while we connect.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* ----------------------------------------
+       Confirm before deleting
+    ---------------------------------------- */
+
+    const confirmed =
+        window.confirm(
+            "Delete your birthday card? This cannot be undone."
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const cardRef =
+            doc(
+                db,
+                "birthdayCards",
+                cardId
+            );
+
+
+        /* ----------------------------------------
+           Check ownership before deleting
+        ---------------------------------------- */
+
+        const cardSnapshot =
+            await getDoc(cardRef);
+
+
+        if (!cardSnapshot.exists()) {
+
+            showRsvpStatus(
+                "That card no longer exists.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const cardData =
+            cardSnapshot.data();
+
+
+        if (
+            cardData.ownerId !==
+            currentUser.uid
+        ) {
+
+            showRsvpStatus(
+                "You can only delete your own card.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* ----------------------------------------
+           Delete
+        ---------------------------------------- */
+
+        await deleteDoc(cardRef);
+
+
+        showRsvpStatus(
+            "Your birthday card was deleted.",
+            "success"
+        );
+
+
+        /* ----------------------------------------
+           Reset form if it was being edited
+        ---------------------------------------- */
+
+        resetRsvpForm();
+
+
+    } catch (error) {
+
+        console.error(
+            "Error deleting birthday card:",
+            error
+        );
+
+
+        showRsvpStatus(
+            "Could not delete the card. Please try again.",
+            "error"
+        );
+    }
+}
+
+
+/* ========================================
+   RESET RSVP FORM
+======================================== */
+
+function resetRsvpForm() {
+
+    if (rsvpForm) {
+
+        rsvpForm.reset();
+
+        delete rsvpForm.dataset.editing;
+
+        delete rsvpForm.dataset.cardId;
+    }
+
+
+    if (previewName) {
+
+        previewName.textContent =
+            "Your Name";
+    }
+
+
+    if (previewAttendance) {
+
+        previewAttendance.textContent =
+            "Haven't decided yet";
+    }
+
+
+    if (previewMessage) {
+
+        previewMessage.textContent =
+            "Your birthday message will appear here...";
+    }
+
+
+    if (rsvpSubmitButton) {
+
+        rsvpSubmitButton.disabled =
+            false;
+
+        rsvpSubmitButton.textContent =
+            "💌 Leave My Birthday Card";
+    }
+}
+
+/* ========================================
+   FINAL INTERACTION POLISH
+   PART 6
+======================================== */
+
+
+/* ========================================
+   UPDATE PREVIEW ATTENDANCE ON LOAD
+======================================== */
+
+function updateAttendancePreview() {
+
+    const selected =
+        document.querySelector(
+            'input[name="attendance"]:checked'
+        );
+
+
+    if (!previewAttendance) {
+        return;
+    }
+
+
+    if (!selected) {
+
+        previewAttendance.textContent =
+            "Haven't decided yet";
+
+        return;
+    }
+
+
+    previewAttendance.textContent =
+        getAttendanceLabel(
+            selected.value
+        );
+}
+
+
+updateAttendancePreview();
+
+
+/* ========================================
+   RSVP SECTION BUTTONS
+======================================== */
+
+const leaveCardButtons =
+    document.querySelectorAll(
+        'a[href="#rsvp"]'
+    );
+
+
+leaveCardButtons.forEach(
+    (button) => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                /*
+                 * If the form was previously in
+                 * edit mode, return it to normal
+                 * when the user intentionally chooses
+                 * "Leave a Card".
+                 */
+
+                if (
+                    rsvpForm &&
+                    rsvpForm.dataset.editing === "true"
+                ) {
+
+                    resetRsvpForm();
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* ========================================
+   KEYBOARD FRIENDLY ESCAPE
+======================================== */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Escape" &&
+            mobileNav &&
+            mobileNav.classList.contains("open")
+        ) {
+
+            mobileNav.classList.remove("open");
+
+
+            if (menuButton) {
+
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                menuButton.textContent =
+                    "☰";
+            }
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   PREVENT DOUBLE CLICK SUBMISSION
+======================================== */
+
+if (rsvpForm) {
+
+    rsvpForm.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Enter" &&
+                event.target.tagName === "INPUT" &&
+                event.target.type !== "submit"
+            ) {
+
+                /*
+                 * Prevent accidental form submission
+                 * when pressing Enter inside an input.
+                 */
+
+                event.preventDefault();
+            }
+
+        }
+    );
+
+}
+
+
+/* ========================================
+   BIRTHDAY CARD ADDED FEEDBACK
+======================================== */
+
+window.addEventListener(
+    "birthdayCardAdded",
+    () => {
+
+        const wall =
+            document.getElementById(
+                "birthday-wall"
+            );
+
+
+        if (!wall) {
+            return;
+        }
+
+
+        setTimeout(
+            () => {
+
+                wall.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            },
+            500
+        );
+
+    }
+);
+
+
+/* ========================================
+   BIRTHDAY CARD UPDATED FEEDBACK
+======================================== */
+
+window.addEventListener(
+    "birthdayCardUpdated",
+    () => {
+
+        const wall =
+            document.getElementById(
+                "birthday-wall"
+            );
+
+
+        if (!wall) {
+            return;
+        }
+
+
+        setTimeout(
+            () => {
+
+                wall.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            },
+            500
+        );
+
+    }
+);
+
+
+/* ========================================
+   CURRENT YEAR IN FOOTER
+======================================== */
+
+const currentYear =
+    document.getElementById(
+        "current-year"
+    );
+
+
+if (currentYear) {
+
+    currentYear.textContent =
+        new Date().getFullYear();
+}
